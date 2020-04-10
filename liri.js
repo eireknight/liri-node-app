@@ -1,15 +1,36 @@
+// Info for Spotify
 require("dotenv").config();
-
+var Spotify = require("node-spotify-api");
 var keys = require("./keys.js");
-
 var spotify = new Spotify(keys.spotify);
 
+// Info for Request
+var request = require("request");
 
-// Make it so liri.js can take in one of the following commands
-concert-this
+// Info for Moment
+var moment = require("moment");
 
-spotify-this-song
+// Info for fs
+var fs = require("fs");
 
-movie-this
 
-do-what-it-says
+// Command process
+var command = process.argv[2];
+
+
+// Concert command
+if (command === "concert-this") {
+
+    var artist = process.argv[3];
+
+    request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
+
+        if (!error && response.statusCode === 200) {
+            console.log("-------------------------------------");
+            console.log("Venue: " + JSON.parse(body)[0].venue.name);
+            console.log("Location: " + JSON.parse(body)[0].venue.city + " " + JSON.parse(body)[0].venue.region);
+            console.log("Date: " + moment(JSON.parse(body)[0].datetime).format("MM/DD/YYYY"));
+            console.log("-------------------------------------");
+        }
+    });
+
